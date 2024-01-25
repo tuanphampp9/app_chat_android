@@ -5,7 +5,8 @@ import * as SplashScreen from 'expo-splash-screen'
 import { useCallback, useEffect, useState } from 'react';
 import * as Font from 'expo-font'
 import AppNavigator from './navigation/AppNavigator';
-
+import { Provider } from 'react-redux'
+import { store } from './store/store';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -50,10 +51,12 @@ export default function App() {
     return null;
   }
   return (
-    <SafeAreaProvider
-      onLayout={onLayoutHandler}>
-      <AppNavigator />
-    </SafeAreaProvider>
+    <Provider store={store}>
+      <SafeAreaProvider
+        onLayout={onLayoutHandler}>
+        <AppNavigator />
+      </SafeAreaProvider>
+    </Provider>
   );
 }
 

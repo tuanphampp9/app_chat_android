@@ -7,7 +7,7 @@ import { Entypo } from '@expo/vector-icons';
 const Input = ({ id, label, icon, iconSize, errorText, isSecureText, onInputChanged, isEmail }) => {
     const [openPassword, setOpenPassword] = useState(!!isSecureText)
     const onChangeText = text => {
-        onInputChanged && onInputChanged(id, text)
+        onInputChanged(id, text)
     }
     return (
         <View style={styles.container}>

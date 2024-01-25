@@ -24,7 +24,7 @@ const AuthScreen = () => {
                                 resizeMode='contain' />
                         </View>
                         {isSignUp ?
-                            <SignUpForm />
+                            <SignUpForm setIsSignUp={setIsSignUp} />
                             :
                             <SignInForm />
                         }
