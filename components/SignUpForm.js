@@ -6,7 +6,6 @@ import validator from '../utils/validationConstrains'
 import { reducer } from '../utils/reducers/formReducer'
 import { signUp } from '../utils/actions/authActions'
 import { useDispatch } from 'react-redux'
-import { getInfoUser } from '../store/authSlice'
 const initialState = {
     inputValidities: {
         firstName: false,
@@ -45,8 +44,7 @@ const SignUpForm = ({ setIsSignUp }) => {
     const authHandler = async () => {
         try {
             setIsLoading(true)
-            const { dataCreate, userData } = await signUp(formState.inputValues)
-            dispatch(getInfoUser({ userData }))
+            const { dataCreate } = await signUp(formState.inputValues)
             if (dataCreate.operationType) {
                 setIsLoading(false)
                 setIsSignUp(false)//next to login
@@ -62,6 +60,7 @@ const SignUpForm = ({ setIsSignUp }) => {
                 label="Họ"
                 icon="user"
                 iconSize={20}
+                value={formState.inputValues.firstName}
                 errorText={formState.errorMessage["firstName"]}
                 onInputChanged={inputChangedHandler} />
             <Input
@@ -69,6 +68,7 @@ const SignUpForm = ({ setIsSignUp }) => {
                 label="Tên"
                 icon="user"
                 iconSize={20}
+                value={formState.inputValues.lastName}
                 errorText={formState.errorMessage["lastName"]}
                 onInputChanged={inputChangedHandler} />
             <Input
@@ -77,6 +77,7 @@ const SignUpForm = ({ setIsSignUp }) => {
                 icon="mail"
                 isEmail={true}
                 iconSize={20}
+                value={formState.inputValues.email}
                 errorText={formState.errorMessage["email"]}
                 onInputChanged={inputChangedHandler} />
             <Input
@@ -85,6 +86,7 @@ const SignUpForm = ({ setIsSignUp }) => {
                 icon="lock"
                 isSecureText={true}
                 iconSize={20}
+                value={formState.inputValues.password}
                 errorText={formState.errorMessage["password"]}
                 onInputChanged={inputChangedHandler} />
             <SubmitButton

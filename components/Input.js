@@ -4,7 +4,15 @@ import { TextInput } from 'react-native'
 import colors from '../constants/colors'
 import { AntDesign } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
-const Input = ({ id, label, icon, iconSize, errorText, isSecureText, onInputChanged, isEmail }) => {
+const Input = ({ id,
+    label,
+    icon,
+    iconSize,
+    errorText,
+    isSecureText,
+    onInputChanged,
+    isEmail,
+    value }) => {
     const [openPassword, setOpenPassword] = useState(!!isSecureText)
     const onChangeText = text => {
         onInputChanged(id, text)
@@ -18,6 +26,7 @@ const Input = ({ id, label, icon, iconSize, errorText, isSecureText, onInputChan
                 <TextInput
                     secureTextEntry={openPassword}
                     style={styles.input}
+                    value={value}
                     onChangeText={onChangeText}
                     keyboardType={isEmail ? 'email-address' : 'default'} />
                 {isSecureText && <TouchableOpacity onPress={() => setOpenPassword(prev => !prev)}>

@@ -1,7 +1,19 @@
 import { View, Text, StyleSheet, Button } from 'react-native'
-import React from 'react'
-
+import React, { useEffect } from 'react'
+import { HeaderButtons, Item } from 'react-navigation-header-buttons'
+import CustomHeaderButtons from '../components/CustomHeaderButtons'
 const ChatListScreen = ({ navigation }) => {
+    useEffect(() => {
+        navigation.setOptions({
+            headerRight: () => {
+                return <HeaderButtons HeaderButtonComponent={CustomHeaderButtons}>
+                    <Item
+                        title="Cuộc trò chuyện mới"
+                        iconName='create-outline' />
+                </HeaderButtons>
+            }
+        })
+    })
     return (
         <View style={styles.container}>
             <Text>ChatListScreen</Text>

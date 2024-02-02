@@ -14,7 +14,8 @@ const TabNavigator = () => {
     return (
         <Tab.Navigator
             screenOptions={{
-                headerTitle: ''
+                headerTitle: '',
+                headerShadowVisible: false
             }}>
             <Tab.Screen name="ChatList" component={ChatListScreen}
                 options={{

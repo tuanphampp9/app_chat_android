@@ -27,6 +27,13 @@ const constraints = {
             minimum: 8,
             message: '^Mật khẩu phải có ít nhất 8 kí tự'
         }
+    },
+    about: {
+        presence: false,//allowEmpty
+        length: {
+            maximum: 50,
+            message: "^Tiểu sử tối đa là 50 kí tự"
+        }
     }
 }
 

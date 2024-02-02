@@ -6,7 +6,7 @@ import validator from '../utils/validationConstrains'
 import { reducer } from '../utils/reducers/formReducer'
 import { signIn } from '../utils/actions/authActions'
 import { useDispatch } from 'react-redux'
-import { authenticate } from '../store/authSlice'
+import { authenticate, getInfoUser } from '../store/authSlice'
 const initialState = {
     inputValidities: {
         email: false,
@@ -39,11 +39,13 @@ const SignInForm = () => {
     const loginUser = async () => {
         try {
             setIsLoading(true)
-            const result = await signIn(formState.inputValues)
+            const { result, userData } = await dispatch(signIn(formState.inputValues))
             const { user } = result
             if (user && user.emailVerified) {
                 //verified
                 dispatch(authenticate({ token: user.accessToken }))
+                //save info user
+                dispatch(getInfoUser({ userData }))
             } else {
                 Alert.alert("Ôi không!", "Bạn chưa xác thực mail!!!")
             }
@@ -60,6 +62,7 @@ const SignInForm = () => {
                 icon="mail"
                 iconSize={20}
                 isEmail={true}
+                value={formState.inputValues.email}
                 errorText={formState.errorMessage["email"]}
                 onInputChanged={inputChangedHandler} />
             <Input
@@ -68,6 +71,7 @@ const SignInForm = () => {
                 icon="lock"
                 isSecureText={true}
                 iconSize={20}
+                value={formState.inputValues.password}
                 errorText={formState.errorMessage["password"]}
                 onInputChanged={inputChangedHandler} />
             <SubmitButton

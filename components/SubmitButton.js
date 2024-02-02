@@ -3,16 +3,16 @@ import React from 'react'
 import { TouchableOpacity } from 'react-native'
 import colors from '../constants/colors'
 
-const SubmitButton = ({ disabled, title, onPress, isLoading }) => {
+const SubmitButton = ({ disabled, title, onPress, isLoading, style }) => {
     return (
         <TouchableOpacity
-            style={[styles.button, disabled && styles.disabled]}
+            style={[styles.button, disabled && styles.disabled, style]}
             disabled={disabled || isLoading}
             onPress={onPress}>
             {isLoading ?
                 <ActivityIndicator size={'small'} color={colors.nearlyWhite} />
                 :
-                <Text>{title}</Text>
+                <Text style={styles.text}>{title}</Text>
             }
         </TouchableOpacity>
     )
@@ -27,9 +27,13 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         borderRadius: 30,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 15
     },
     disabled: {
         backgroundColor: colors.grey
+    },
+    text: {
+        color: colors.nearlyWhite
     }
 })
