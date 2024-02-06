@@ -70,7 +70,8 @@ const SettingsScreen = () => {
                 <ProfileImage
                     size={70}
                     userId={userData.userId}
-                    uri={userData.profilePicture} />
+                    uri={userData.profilePicture}
+                    showEditBtn={true} />
                 <Input
                     id="firstName"
                     label="Họ"

@@ -7,6 +7,9 @@ import ChatListScreen from '../screens/ChatListScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import { Ionicons } from '@expo/vector-icons';
 import ChatScreen from '../screens/ChatScreen';
+import NewChatScreen from '../screens/NewChatScreen';
+import DetailUser from '../screens/DetailUser';
+import NotificationScreen from '../screens/NotificationScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -40,18 +43,29 @@ const TabNavigator = () => {
 const MainNavigator = () => {
     return (
         <Stack.Navigator initialRouteName='Home'>
-            <Stack.Screen name="Home" component={TabNavigator}
-                options={{
-                    headerShown: false
-                }} />
-            <Stack.Screen name="ChatScreen" component={ChatScreen}
-                options={{
-                    gestureEnabled: true//vuốt
-                }} />
-            <Stack.Screen name="ChatSettings" component={ChatSettingsScreen}
-                options={{
-                    headerTitle: 'Settings'
-                }} />
+            <Stack.Group>
+                <Stack.Screen name="Home" component={TabNavigator}
+                    options={{
+                        headerShown: false
+                    }} />
+                <Stack.Screen name="ChatScreen" component={ChatScreen}
+                    options={{
+                        gestureEnabled: true//vuốt
+                    }} />
+                <Stack.Screen name="ChatSettings" component={ChatSettingsScreen}
+                    options={{
+                        headerTitle: 'Settings'
+                    }} />
+                <Stack.Screen name="DetailUser" component={DetailUser} />
+            </Stack.Group>
+            <Stack.Group screenOptions={{ presentation: 'modal' }}>
+                <Stack.Screen
+                    name='NewChat'
+                    component={NewChatScreen} />
+                <Stack.Screen
+                    name='Notification'
+                    component={NotificationScreen} />
+            </Stack.Group>
         </Stack.Navigator>
     )
 }

@@ -8,7 +8,7 @@ import { launchImagePicker, uploadImageAsync } from '../utils/ImagePickerConfig'
 import { updateSignedInUserData } from '../utils/actions/authActions';
 import { useDispatch } from 'react-redux'
 import { updateLoggedUserData } from '../store/authSlice';
-const ProfileImage = ({ size, uri, userId }) => {
+const ProfileImage = ({ size, uri, userId, showEditBtn }) => {
     const sourceImg = uri ? { uri } : userImage
     const [image, setImage] = useState(null)
     const dispatch = useDispatch();
@@ -41,13 +41,14 @@ const ProfileImage = ({ size, uri, userId }) => {
         <TouchableOpacity
             onPress={pickImage}
             style={styles.container}
+            disabled={!showEditBtn}
         >
             <Image
-                style={[styles.image, { width: size, height: size }]}
+                style={[styles.image, { width: size, height: size, borderRadius: size / 2 }]}
                 source={image ? image : sourceImg} />
-            <View style={styles.editIcon}>
+            {showEditBtn && <View style={styles.editIcon}>
                 <FontAwesome name="pencil-square-o" size={24} color="black" />
-            </View>
+            </View>}
         </TouchableOpacity>
     )
 }
@@ -56,7 +57,6 @@ export default ProfileImage
 
 const styles = StyleSheet.create({
     image: {
-        borderRadius: 50,
         borderColor: colors.grey,
         borderWidth: 1,
         height: 80,
