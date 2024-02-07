@@ -74,7 +74,7 @@ const NewChatScreen = ({ navigation }) => {
                         return <DataUserItem
                             title={`${itemData.item.firstName} ${itemData.item.lastName}`}
                             image={itemData.item.profilePicture}
-                            userId={itemData.item.userId} />
+                            accountId={itemData.item.userId} />
                     }}
                     keyExtractor={item => {
                         return item.userId

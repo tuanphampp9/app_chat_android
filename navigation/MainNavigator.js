@@ -64,7 +64,10 @@ const MainNavigator = () => {
                     component={NewChatScreen} />
                 <Stack.Screen
                     name='Notification'
-                    component={NotificationScreen} />
+                    component={NotificationScreen}
+                    options={{
+                        headerTitle: 'Lời mời kết bạn'
+                    }} />
             </Stack.Group>
         </Stack.Navigator>
     )

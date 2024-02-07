@@ -1,22 +1,18 @@
-
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-export const getFirebaseApp = () => {
-    // Your web app's Firebase configuration
-    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-    const firebaseConfig = {
-        apiKey: "AIzaSyCTN6dQDnJTAQL9yrTGHCW4NL6ekRSA6WA",
-        authDomain: "app-chat-realtime-1e526.firebaseapp.com",
-        projectId: "app-chat-realtime-1e526",
-        storageBucket: "app-chat-realtime-1e526.appspot.com",
-        messagingSenderId: "980986417818",
-        appId: "1:980986417818:web:df5e9515ddd12668bc0523",
-        measurementId: "G-VVL3DVBVXC"
-    };
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyAykEZ_tYUKVReYi5wYHyAeEdDiw3hKgnw",
+  authDomain: "message-36589.firebaseapp.com",
+  databaseURL: "https://message-36589-default-rtdb.firebaseio.com",
+  projectId: "message-36589",
+  storageBucket: "message-36589.appspot.com",
+  messagingSenderId: "349649180233",
+  appId: "1:349649180233:web:a404e7569602b01d385198",
+};
 
-    // Initialize Firebase
-    return initializeApp(firebaseConfig);
-}
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
