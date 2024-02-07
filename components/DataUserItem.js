@@ -5,16 +5,16 @@ import colors from '../constants/colors';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux'
 const DataUserItem = (props) => {
-    const { userId, title, image } = props;
+    const { accountId, title, image } = props;
     const navigation = useNavigation();
     const userLogin = useSelector((state) => state.auth.userData)
     return (
         <TouchableWithoutFeedback onPress={() => {
-            if (userId === userLogin.userId) {
+            if (accountId === userLogin.userId) {
                 return Alert.alert('Đừng nhầm lẫn như vậy chứ', 'Bạn không thể nhắn tin cho chính bạn')
             }
             navigation.navigate("DetailUser", {
-                accountId: userId
+                accountId: accountId
             })
         }}
         >

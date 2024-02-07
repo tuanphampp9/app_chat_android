@@ -78,7 +78,7 @@ const DetailUser = ({ navigation, route }) => {
                     onPress={() => navigation.navigate("ChatScreen")} />
                 <SubmitButton
                     title={statusRequest === '' ? "Thêm bạn bè" : objStatus[statusRequest]}
-                    disabled={statusRequest === 'pending'}
+                    disabled={['approved', 'pending'].includes(statusRequest)}
                     onPress={actionSendRequest} />
             </View>
         </View>

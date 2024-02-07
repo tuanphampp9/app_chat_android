@@ -47,7 +47,9 @@ const ChatListScreen = ({ navigation }) => {
                     <Item
                         iconName='notifications'
                         color={colors.grey}
-                        onPress={() => navigation.navigate('Notification')} />
+                        onPress={() => navigation.navigate('Notification', {
+                            userId: userLogin?.userId
+                        })} />
                     {countNoti !== 0 && <Text style={styles.textNotification}>{countNoti}</Text>}
                 </HeaderButtons>
             }
