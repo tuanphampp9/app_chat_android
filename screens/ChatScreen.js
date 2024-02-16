@@ -25,7 +25,6 @@ const ChatScreen = () => {
         try {
             let id = chatId;
             if (!id) {
-                console.log('xy');
                 //No chat Id. Create the chat
                 const id = await createChat(newChatData[1], {
                     users: newChatData
