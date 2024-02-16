@@ -2,8 +2,6 @@ import { View, Text, TouchableWithoutFeedback, StyleSheet, Alert, TouchableOpaci
 import React, { useEffect } from 'react'
 import ProfileImage from './ProfileImage'
 import colors from '../constants/colors';
-// import { useNavigation } from '@react-navigation/native';
-// import { useSelector } from 'react-redux'
 import { MaterialIcons } from '@expo/vector-icons';
 import { createFriend, deleteNotify, updateInfoNotify } from '../utils/actions/notificationAction';
 const DataUserRequestFriend = (props) => {

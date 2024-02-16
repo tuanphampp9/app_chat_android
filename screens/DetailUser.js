@@ -13,6 +13,7 @@ const DetailUser = ({ navigation, route }) => {
     const { accountId } = route.params;
     const userLogin = useSelector((state) => state.auth.userData)
     const [accountData, setAccountData] = useState({});
+    const [isFriend, setIsFriend] = useState(false);
     useEffect(() => {
         navigation.setOptions({
             headerTitle: "Trang cá nhân"
@@ -25,6 +26,7 @@ const DetailUser = ({ navigation, route }) => {
         }
         fetchData();
     }, [accountId])
+
     useEffect(() => {
         const app = getFirebaseApp();
         const dbRef = ref(getDatabase(app));
@@ -39,6 +41,7 @@ const DetailUser = ({ navigation, route }) => {
                 arrayNotifies.forEach(noti => {
                     if (noti.ids.includes(userLogin?.userId) && noti.ids.includes(accountId)) {
                         setStatusRequest(noti.status);
+                        setIsFriend(true)
                     }
                 })
             }
@@ -75,7 +78,11 @@ const DetailUser = ({ navigation, route }) => {
                 <SubmitButton
                     title="Nhắn tin"
                     style={styles.btnSendMsg}
-                    onPress={() => navigation.navigate("ChatScreen")} />
+                    onPress={() => navigation.navigate("ChatScreen", {
+                        accountData: accountData,
+                        newChatData: [accountId, userLogin?.userId],
+                        isFriend: isFriend
+                    })} />
                 <SubmitButton
                     title={statusRequest === '' ? "Thêm bạn bè" : objStatus[statusRequest]}
                     disabled={['approved', 'pending'].includes(statusRequest)}

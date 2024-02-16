@@ -24,9 +24,8 @@ const ChatListScreen = ({ navigation }) => {
                         notiId: key,
                         ...objectNotify[key]
                     }));
-                    dispatch(getInfoRequestFriend(arrayNotifies))
-                    console.log('snap: ', arrayNotifies)
-                    setCountNoti(arrayNotifies.length)
+                    // dispatch(getInfoRequestFriend(arrayNotifies))
+                    setCountNoti(arrayNotifies.filter(notify => notify.status === 'pending').length)
                 }
             }
             )

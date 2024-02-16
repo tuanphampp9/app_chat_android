@@ -1,21 +1,56 @@
 import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity } from 'react-native'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ImageBackground } from 'react-native'
 import backgroundImage from '../assets/images/droplet.jpeg'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Ionicons } from '@expo/vector-icons';
 import colors from '../constants/colors'
+import { useRoute, useNavigation } from '@react-navigation/native';
+import PageContainer from '../components/PageContainer'
+import Bubble from '../components/Bubble'
+import { createChat } from '../utils/actions/chatActions'
 const ChatScreen = () => {
     const [messageText, setMessageText] = useState('');
-    const sendMessage = useCallback(() => {
+    const route = useRoute();
+    const { accountData, newChatData, isFriend } = route.params;
+    console.log('is friend:', isFriend);
+    const [chatId, setChatId] = useState(route.params?.chatId)
+    const navigation = useNavigation();
+    useEffect(() => {
+        navigation.setOptions({
+            headerTitle: accountData.fullName
+        })
+    }, [])
+    const sendMessage = useCallback(async () => {
+        try {
+            let id = chatId;
+            if (!id) {
+                console.log('xy');
+                //No chat Id. Create the chat
+                const id = await createChat(newChatData[1], {
+                    users: newChatData
+                })
+                setChatId(id);
+            }
+        } catch (error) {
+
+        }
         setMessageText("")
-    }, [messageText])
+    }, [messageText, chatId])
     return (
         <SafeAreaView
             edges={['right', 'left', 'bottom']}
             style={styles.container}>
-            <ImageBackground source={backgroundImage} style={styles.background} />
-            <View style={styles.inputContainer}>
+            <ImageBackground source={backgroundImage} style={styles.background} >
+                <PageContainer style={{ backgroundColor: 'transparent' }}>
+                    {
+                        !chatId && <Bubble
+                            text={isFriend ? "Tin nhắn mới" : "Hai bạn chưa phải là bạn bè! Vui lòng kết bạn để nhắn tin"}
+                            type="system" />
+                    }
+                </PageContainer>
+            </ImageBackground>
+            {isFriend && <View style={styles.inputContainer}>
                 <TouchableOpacity onPress={() => console.log('pressed')}>
                     <Ionicons name="add" size={24} color={colors.blue} />
                 </TouchableOpacity>
@@ -34,7 +69,7 @@ const ChatScreen = () => {
                         }} />
                     </TouchableOpacity>
                 }
-            </View>
+            </View>}
         </SafeAreaView>
     )
 }

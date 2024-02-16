@@ -42,7 +42,7 @@ export const createFriend = async (sendFrom, sendTo) => {
         const friendList = { friendId: sendFrom, userId: sendTo };
         const app = getFirebaseApp();
         const dbRef = ref(getDatabase(app));
-        const listFriendRef = child(dbRef, 'friend_list');
+        const listFriendRef = child(dbRef, "friend_list");
         await push(listFriendRef, friendList)
         return true;
     } catch (error) {
@@ -50,6 +50,7 @@ export const createFriend = async (sendFrom, sendTo) => {
         Alert.alert('Xin lỗi', 'Có lỗi đã xảy ra')
     }
 }
+
 export const deleteNotify = async (idNotify) => {
     try {
         const app = getFirebaseApp();

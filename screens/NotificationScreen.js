@@ -21,7 +21,6 @@ const NotificationScreen = ({ route }) => {
                         idNotify: key
                     }));
                     const arrFilterPending = arrayNotifies.filter((notify) => notify.status === 'pending')
-                    console.log('obj kaZ: ', arrFilterPending);
                     setListNotiRequestFriend(arrFilterPending)
                 }
             }

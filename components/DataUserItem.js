@@ -3,16 +3,11 @@ import React, { useEffect } from 'react'
 import ProfileImage from './ProfileImage'
 import colors from '../constants/colors';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux'
 const DataUserItem = (props) => {
     const { accountId, title, image } = props;
     const navigation = useNavigation();
-    const userLogin = useSelector((state) => state.auth.userData)
     return (
         <TouchableWithoutFeedback onPress={() => {
-            if (accountId === userLogin.userId) {
-                return Alert.alert('Đừng nhầm lẫn như vậy chứ', 'Bạn không thể nhắn tin cho chính bạn')
-            }
             navigation.navigate("DetailUser", {
                 accountId: accountId
             })

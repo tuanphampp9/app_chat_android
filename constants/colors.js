@@ -6,5 +6,6 @@ export default {
     textColor: '#1c1e21',
     primary: '#32d48e',
     extraLightGrey: '#ededed',
-    red: '#ff4545'
+    red: '#ff4545',
+    beige: '#FEF5C3'
 }

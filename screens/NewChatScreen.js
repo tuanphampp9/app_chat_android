@@ -10,11 +10,13 @@ import commonStyle from '../constants/commonStyle'
 import { FontAwesome } from '@expo/vector-icons';
 import { searchUsers } from '../utils/actions/userAction'
 import DataUserItem from '../components/DataUserItem'
+import { useSelector } from 'react-redux'
 const NewChatScreen = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [users, setUsers] = useState([]);
     const [noResultsFound, setNoResultsFound] = useState(false);
     const [searchInput, setSearchInput] = useState('');
+    const userLogin = useSelector((state) => state.auth.userData)
     useEffect(() => {
         navigation.setOptions({
             headerLeft: () => {
@@ -25,18 +27,18 @@ const NewChatScreen = ({ navigation }) => {
                         onPress={() => navigation.goBack()} />
                 </HeaderButtons>
             },
-            headerTitle: "Cuộc trò chuyện mới"
+            headerTitle: "Tìm bạn bè"
         })
     }, [])
     const findUser = async () => {
         setIsLoading(true);
-        const usersResult = await searchUsers(searchInput);
-        setUsers(usersResult);
-        if (usersResult.length === 0) {
-            setNoResultsFound(true)
-        } else {
-            setNoResultsFound(false);
+        const usersResult = await searchUsers(searchInput.toLowerCase());
+        const indexMe = usersResult.findIndex(user => user.userId === userLogin?.userId)
+        if (indexMe !== -1) {
+            usersResult.splice(indexMe, 1)//hidden current user is logging
         }
+        setUsers(usersResult);
+        setNoResultsFound(usersResult.length === 0)
         setIsLoading(false);
     }
     useEffect(() => {
