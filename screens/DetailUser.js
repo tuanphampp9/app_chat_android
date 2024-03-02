@@ -41,7 +41,8 @@ const DetailUser = ({ navigation, route }) => {
                 arrayNotifies.forEach(noti => {
                     if (noti.ids.includes(userLogin?.userId) && noti.ids.includes(accountId)) {
                         setStatusRequest(noti.status);
-                        setIsFriend(true)
+                        //check xem có phải là bạn bè hay không
+                        setIsFriend(noti.status === 'approved')
                     }
                 })
             }
@@ -80,7 +81,7 @@ const DetailUser = ({ navigation, route }) => {
                     style={styles.btnSendMsg}
                     onPress={() => navigation.navigate("ChatScreen", {
                         accountData: accountData,
-                        newChatData: [accountId, userLogin?.userId],
+                        newChatData: { users: [accountId, userLogin?.userId] },
                         isFriend: isFriend
                     })} />
                 <SubmitButton

@@ -42,10 +42,10 @@ const SignInForm = () => {
             const { result, userData } = await dispatch(signIn(formState.inputValues))
             const { user } = result
             if (user && user.emailVerified) {
+                //save info user
+                dispatch(getInfoUser({ userData: userData }))
                 //verified
                 dispatch(authenticate({ token: user.accessToken }))
-                //save info user
-                dispatch(getInfoUser({ userData }))
             } else {
                 Alert.alert("Ôi không!", "Bạn chưa xác thực mail!!!")
             }

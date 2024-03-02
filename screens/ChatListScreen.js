@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Button } from 'react-native'
+import { View, Text, StyleSheet, Button, FlatList } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import CustomHeaderButtons from '../components/CustomHeaderButtons'
@@ -6,11 +6,26 @@ import colors from '../constants/colors'
 import { useSelector, useDispatch } from 'react-redux'
 import { getFirebaseApp } from '../utils/firebaseConfig'
 import { child, equalTo, getDatabase, onValue, orderByChild, query, ref } from 'firebase/database'
-import { getInfoRequestFriend } from '../store/notifySlice'
+import DataUserItem from '../components/DataUserItem'
+import PageContainer from '../components/PageContainer'
+import { handleTimeMessage } from '../utils/handleTime'
+import PageTitle from '../components/PageTitle'
+
 const ChatListScreen = ({ navigation }) => {
     const [countNoti, setCountNoti] = useState(0);
     const dispatch = useDispatch();
     const userLogin = useSelector((state) => state.auth.userData)
+    const storedUsers = useSelector((state) => state.users.storedUsers)
+    const userChats = useSelector(state => {
+        const chatObj = state.chats.chatsData;
+        const chatArr = Object.values(chatObj);
+        //sắp xếp các tin nhắn mới nhất đưa lên đầu
+        const sortNewestMessage = chatArr.sort((a, b) => {
+            return new Date(b.updateAt) - new Date(a.updateAt);
+        })
+        return sortNewestMessage;
+    });
+    console.log('user chat: ', userChats);
     useEffect(() => {
         if (userLogin?.userId) {
             const app = getFirebaseApp();
@@ -24,7 +39,6 @@ const ChatListScreen = ({ navigation }) => {
                         notiId: key,
                         ...objectNotify[key]
                     }));
-                    // dispatch(getInfoRequestFriend(arrayNotifies))
                     setCountNoti(arrayNotifies.filter(notify => notify.status === 'pending').length)
                 }
             }
@@ -54,11 +68,39 @@ const ChatListScreen = ({ navigation }) => {
             }
         })
     }, [countNoti])
+
     return (
-        <View style={styles.container}>
-            <Text>ChatListScreen</Text>
-            <Button title='Go to chat screen' onPress={() => navigation.navigate('ChatScreen')} />
-        </View>
+        <PageContainer>
+            <PageTitle text="Tin nhắn gần đây" />
+            <FlatList
+                data={userChats}
+                renderItem={(itemData) => {
+                    const chatDataObj = itemData.item;
+                    //filter other user
+                    const otherUserId = chatDataObj.users.find((userId) => userId !== userLogin?.userId);
+                    const otherUser = storedUsers[otherUserId];
+                    console.log('chatDataObj:', chatDataObj);
+                    //không có user nào thì return luôn!
+                    if (!otherUser) return;
+                    return <DataUserItem
+                        title={otherUser.fullName}
+                        image={otherUser.profilePicture}
+                        accountId={otherUser.userId}
+                        subTitle={chatDataObj?.latestMessage}
+                        onPress={() => {
+                            navigation.navigate('ChatScreen', {
+                                accountData: otherUser,
+                                newChatData: { users: [otherUser.userId, userLogin?.userId] },
+                                isFriend: true,
+                                chatId: chatDataObj.key
+                            })
+                        }}
+                        textTime={handleTimeMessage(chatDataObj.updateAt)}
+                    />
+                }}
+            />
+        </PageContainer>
+
     )
 }
 export default ChatListScreen

@@ -70,18 +70,17 @@ export const signIn = (dataSubmit) => {
         const auth = getAuth(app);
         try {
             const result = await signInWithEmailAndPassword(auth, email, password);
-            //get time expiration of token(default 1 hour)
             const { stsTokenManager, uid } = result.user;
-            const expirationDate = new Date(stsTokenManager.expirationTime)
+            const userData = await getUserData(uid);
             //save info into local Emulator
             saveDataToStorage(result.user.accessToken, uid, expirationDate)
+            //get time expiration of token(default 1 hour)
+            const expirationDate = new Date(stsTokenManager.expirationTime)
             const expirationTime = new Date(result.user.stsTokenManager.expirationTime) - new Date()
             //set timeout token expire to logout
             timer = setTimeout(() => {
                 dispatch(logoutHandler())
             }, expirationTime)
-
-            const userData = await getUserData(uid);
             return {
                 result,
                 userData

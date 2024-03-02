@@ -1,4 +1,4 @@
-import { child, getDatabase, push, ref } from 'firebase/database';
+import { child, getDatabase, push, ref, update } from 'firebase/database';
 import { getFirebaseApp } from '../firebaseConfig';
 export const createChat = async (loggedInUserId, chatData) => {
     const newChatData = {
@@ -18,4 +18,29 @@ export const createChat = async (loggedInUserId, chatData) => {
         await push(child(dbRef, `userChats/${userId}`), newChat.key)
     });
     return newChat.key;
+}
+
+export const sendTextMessage = async (chatId, senderId, messageText) => {
+    const app = getFirebaseApp();
+    const dbRef = ref(getDatabase());
+    const messageRef = child(dbRef, `messages/${chatId}`)
+    const messageData = {
+        sendBy: senderId,
+        sendAt: new Date().toString(),
+        text: messageText
+    }
+    await push(messageRef, messageData);
+    //cập nhật chat khi gửi tin nhắn
+    await updateChat(chatId, senderId, messageText)
+}
+
+export const updateChat = async (chatId, senderId, messageText) => {
+    const app = getFirebaseApp();
+    const dbRef = ref(getDatabase(app));
+    const chatRef = child(dbRef, `chats/${chatId}`);
+    await update(chatRef, {
+        updatedBy: senderId,
+        updateAt: new Date().toString(),
+        latestMessage: messageText
+    })
 }

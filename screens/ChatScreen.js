@@ -8,31 +8,49 @@ import colors from '../constants/colors'
 import { useRoute, useNavigation } from '@react-navigation/native';
 import PageContainer from '../components/PageContainer'
 import Bubble from '../components/Bubble'
-import { createChat } from '../utils/actions/chatActions'
+import { createChat, sendTextMessage } from '../utils/actions/chatActions'
+import { useSelector } from 'react-redux'
 const ChatScreen = () => {
     const [messageText, setMessageText] = useState('');
+    const userLogin = useSelector((state) => state.auth.userData)
+    const chatMessages = useSelector((state) => state.messages.messagesData);
+    console.log('mess: ', chatMessages);
     const route = useRoute();
+    //newChat data là các userId của 2 người chat với nhau
     const { accountData, newChatData, isFriend } = route.params;
-    console.log('is friend:', isFriend);
-    const [chatId, setChatId] = useState(route.params?.chatId)
+    const [chatId, setChatId] = useState(route.params?.chatId);
+    const userChats = useSelector(state => state.chats.chatsData);
+    const chatData = (chatId && userChats[chatId]) || newChatData;
+    const [chatUsers, setChatUsers] = useState([]);
+
     const navigation = useNavigation();
     useEffect(() => {
         navigation.setOptions({
             headerTitle: accountData.fullName
         })
-    }, [])
+        setChatUsers(chatData.users)
+    }, [chatUsers])
+
     const sendMessage = useCallback(async () => {
         try {
             let id = chatId;
             if (!id) {
+                console.log('hello: ', newChatData);
                 //No chat Id. Create the chat
-                const id = await createChat(newChatData[1], {
-                    users: newChatData
+                //newChatData.users[1] là user đang loggin
+                const id = await createChat(newChatData.users[1], {
+                    users: newChatData.users
                 })
-                setChatId(id);
+                if (id) {//tạo chat thành công thì tạo message
+                    await sendTextMessage(id, userLogin?.userId, messageText)
+                    setChatId(id);
+                }
+            } else {
+                //có chatId rồi thì tạo message luôn
+                await sendTextMessage(chatId, userLogin?.userId, messageText)
             }
         } catch (error) {
-
+            console.log('e', error)
         }
         setMessageText("")
     }, [messageText, chatId])

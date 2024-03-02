@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native'
-import React from 'react'
+import { View, Text, ActivityIndicator } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
 import ChatSettingsScreen from '../screens/ChatSettingsScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -10,6 +10,14 @@ import ChatScreen from '../screens/ChatScreen';
 import NewChatScreen from '../screens/NewChatScreen';
 import DetailUser from '../screens/DetailUser';
 import NotificationScreen from '../screens/NotificationScreen';
+import { useSelector, useDispatch } from 'react-redux'
+import { getFirebaseApp } from '../utils/firebaseConfig';
+import { child, get, getDatabase, off, onValue, ref } from 'firebase/database';
+import { setChatsData } from '../store/chatSlice';
+import colors from '../constants/colors';
+import commonStyle from '../constants/commonStyle';
+import { setStoredUsers } from '../store/usersSlice';
+import { setChatMessages } from '../store/messagesSlice';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -40,7 +48,7 @@ const TabNavigator = () => {
         </Tab.Navigator>
     )
 }
-const MainNavigator = () => {
+const StackNavigator = () => {
     return (
         <Stack.Navigator initialRouteName='Home'>
             <Stack.Group>
@@ -70,6 +78,81 @@ const MainNavigator = () => {
                     }} />
             </Stack.Group>
         </Stack.Navigator>
+    )
+}
+const MainNavigator = () => {
+    const userLogin = useSelector((state) => state.auth.userData);
+    const storedUsers = useSelector((state) => state.users.storedUsers)
+    const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useDispatch();
+    useEffect(() => {
+        console.log('Subscribing to firebase listeners');
+        const app = getFirebaseApp();
+        const dbRef = ref(getDatabase(app));
+        const userChatsRef = child(dbRef, `userChats/${userLogin?.userId}`);
+        const refs = [userChatsRef];
+        onValue(userChatsRef, (querySnapshot) => {
+            let chatsFoundCount = 0;
+            const chatsData = {};
+            const chatIdsObj = querySnapshot.val() ?? {};
+            const chatIdsArr = Object.values(chatIdsObj);
+            chatIdsArr.forEach((chatId) => {
+                const chatRef = child(dbRef, `chats/${chatId}`)
+                refs.push(chatRef);
+                onValue(chatRef, (chatSnapshot) => {
+                    chatsFoundCount++;
+                    const valueChat = chatSnapshot.val();
+                    const keyChat = chatSnapshot.key;
+                    if (valueChat) {
+                        valueChat.key = keyChat;
+                        chatsData[keyChat] = valueChat;
+                        console.log('value chat item: ', valueChat);
+                        //lưu dữ liệu của các users khác
+                        valueChat.users.forEach(userId => {
+                            if (storedUsers[userId]) {
+                                return;
+                            }
+                            const userRef = child(dbRef, `users/${userId}`)
+                            get(userRef)
+                                .then(userSnapshot => {
+                                    const userSnapshotData = userSnapshot.val();
+                                    dispatch(setStoredUsers({ newUsers: { userSnapshotData } }))
+                                })
+                            refs.push(userRef)
+                        })
+                    }
+                    if (chatsFoundCount >= chatIdsArr.length) {
+                        dispatch(setChatsData({ chatsData }))
+                        setIsLoading(false);
+                    }
+                })
+                if (chatsFoundCount === 0) {
+                    setIsLoading(false);
+                }
+
+                //lưu messages vào redux
+                const messagesRef = child(dbRef, `messages/${chatId}`)
+                refs.push(messagesRef);
+                onValue(messagesRef, messagesSnapshot => {
+                    const messagesData = messagesSnapshot.val();
+                    dispatch(setChatMessages({ chatId, messagesData }))
+                    console.log('message data:', messagesData);
+                })
+            })
+        })
+
+        return () => {
+            console.log('UnSubscribing to  firebase listeners when component unmount!');
+            refs.forEach(ref => off(ref))
+        }
+    }, [])
+    if (isLoading) {
+        return <View style={commonStyle.center}>
+            <ActivityIndicator size={'large'} color={colors.primary} />
+        </View>
+    }
+    return (
+        <StackNavigator />
     )
 }
 

@@ -4,14 +4,10 @@ import ProfileImage from './ProfileImage'
 import colors from '../constants/colors';
 import { useNavigation } from '@react-navigation/native';
 const DataUserItem = (props) => {
-    const { accountId, title, image } = props;
+    const { accountId, title, image, subTitle, textTime, onPress } = props;
     const navigation = useNavigation();
     return (
-        <TouchableWithoutFeedback onPress={() => {
-            navigation.navigate("DetailUser", {
-                accountId: accountId
-            })
-        }}
+        <TouchableWithoutFeedback onPress={onPress}
         >
             <View style={styles.container}>
                 <ProfileImage
@@ -24,6 +20,16 @@ const DataUserItem = (props) => {
                         style={styles.title}>
                         {title}
                     </Text>
+                    {subTitle &&
+                        <Text
+                            numberOfLines={2}
+                            style={styles.subTitle}
+                        >
+                            {subTitle}
+                        </Text>
+                    }
+                    {textTime &&
+                        <Text>{textTime}</Text>}
                 </View>
             </View>
         </TouchableWithoutFeedback>
@@ -43,8 +49,15 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         marginLeft: 10,
+    },
+    title: {
         fontFamily: 'medium',
         fontSize: 16,
         letterSpacing: 0.3
+    },
+    subTitle: {
+        fontFamily: 'regular',
+        fontSize: 14,
+        letterSpacing: 0.2
     }
 })

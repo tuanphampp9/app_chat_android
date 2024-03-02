@@ -10,13 +10,15 @@ import commonStyle from '../constants/commonStyle'
 import { FontAwesome } from '@expo/vector-icons';
 import { searchUsers } from '../utils/actions/userAction'
 import DataUserItem from '../components/DataUserItem'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { setStoredUsers } from '../store/usersSlice'
 const NewChatScreen = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [users, setUsers] = useState([]);
     const [noResultsFound, setNoResultsFound] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const userLogin = useSelector((state) => state.auth.userData)
+    const dispatch = useDispatch();
     useEffect(() => {
         navigation.setOptions({
             headerLeft: () => {
@@ -38,6 +40,10 @@ const NewChatScreen = ({ navigation }) => {
             usersResult.splice(indexMe, 1)//hidden current user is logging
         }
         setUsers(usersResult);
+        //tìm thấy user
+        if (usersResult.length) {
+            dispatch(setStoredUsers({ newUsers: usersResult }))
+        }
         setNoResultsFound(usersResult.length === 0)
         setIsLoading(false);
     }
@@ -76,7 +82,12 @@ const NewChatScreen = ({ navigation }) => {
                         return <DataUserItem
                             title={`${itemData.item.firstName} ${itemData.item.lastName}`}
                             image={itemData.item.profilePicture}
-                            accountId={itemData.item.userId} />
+                            accountId={itemData.item.userId}
+                            onPress={() => {
+                                navigation.navigate("DetailUser", {
+                                    accountId: itemData.item.userId
+                                })
+                            }} />
                     }}
                     keyExtractor={item => {
                         return item.userId
