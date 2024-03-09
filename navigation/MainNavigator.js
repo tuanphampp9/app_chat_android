@@ -106,7 +106,6 @@ const MainNavigator = () => {
                     if (valueChat) {
                         valueChat.key = keyChat;
                         chatsData[keyChat] = valueChat;
-                        console.log('value chat item: ', valueChat);
                         //lưu dữ liệu của các users khác
                         valueChat.users.forEach(userId => {
                             if (storedUsers[userId]) {
@@ -136,7 +135,6 @@ const MainNavigator = () => {
                 onValue(messagesRef, messagesSnapshot => {
                     const messagesData = messagesSnapshot.val();
                     dispatch(setChatMessages({ chatId, messagesData }))
-                    console.log('message data:', messagesData);
                 })
             })
         })

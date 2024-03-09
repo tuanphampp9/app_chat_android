@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, LogBox, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import * as SplashScreen from 'expo-splash-screen'
 import { useCallback, useEffect, useState } from 'react';
@@ -7,7 +7,8 @@ import * as Font from 'expo-font'
 import AppNavigator from './navigation/AppNavigator';
 import { Provider } from 'react-redux'
 import { store } from './store/store';
-
+import { MenuProvider } from 'react-native-popup-menu';
+LogBox.ignoreAllLogs();
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
@@ -54,7 +55,9 @@ export default function App() {
     <Provider store={store}>
       <SafeAreaProvider
         onLayout={onLayoutHandler}>
-        <AppNavigator />
+        <MenuProvider>
+          <AppNavigator />
+        </MenuProvider>
       </SafeAreaProvider>
     </Provider>
   );

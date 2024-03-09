@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Button, TextInput, TouchableOpacity, FlatList } from 'react-native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { ImageBackground } from 'react-native'
 import backgroundImage from '../assets/images/droplet.jpeg'
@@ -12,16 +12,32 @@ import { createChat, sendTextMessage } from '../utils/actions/chatActions'
 import { useSelector } from 'react-redux'
 const ChatScreen = () => {
     const [messageText, setMessageText] = useState('');
-    const userLogin = useSelector((state) => state.auth.userData)
-    const chatMessages = useSelector((state) => state.messages.messagesData);
-    console.log('mess: ', chatMessages);
+    const [errorBannerText, setErrorBannerText] = useState('');
+    const [chatUsers, setChatUsers] = useState([]);
     const route = useRoute();
+    const [chatId, setChatId] = useState(route.params?.chatId);
+
+    const userLogin = useSelector((state) => state.auth.userData)
+    const chatMessages = useSelector((state) => {
+        if (!chatId) return [];
+        const chatMessagesData = state.messages.messagesData[chatId];
+        if (!chatMessagesData) return [];
+
+        const messageList = [];
+        for (const key in chatMessagesData) {
+            const message = chatMessagesData[key];
+            messageList.push({
+                ...message,
+                key
+            });
+        }
+        return messageList;
+    });
+
     //newChat data là các userId của 2 người chat với nhau
     const { accountData, newChatData, isFriend } = route.params;
-    const [chatId, setChatId] = useState(route.params?.chatId);
     const userChats = useSelector(state => state.chats.chatsData);
     const chatData = (chatId && userChats[chatId]) || newChatData;
-    const [chatUsers, setChatUsers] = useState([]);
 
     const navigation = useNavigation();
     useEffect(() => {
@@ -35,7 +51,6 @@ const ChatScreen = () => {
         try {
             let id = chatId;
             if (!id) {
-                console.log('hello: ', newChatData);
                 //No chat Id. Create the chat
                 //newChatData.users[1] là user đang loggin
                 const id = await createChat(newChatData.users[1], {
@@ -49,8 +64,12 @@ const ChatScreen = () => {
                 //có chatId rồi thì tạo message luôn
                 await sendTextMessage(chatId, userLogin?.userId, messageText)
             }
+            setErrorBannerText('');
         } catch (error) {
             console.log('e', error)
+            //hiện khoảng 4s thì mất
+            setErrorBannerText('Message failed to send');
+            setTimeout(() => setErrorBannerText(''), 4000);
         }
         setMessageText("")
     }, [messageText, chatId])
@@ -64,6 +83,29 @@ const ChatScreen = () => {
                         !chatId && <Bubble
                             text={isFriend ? "Tin nhắn mới" : "Hai bạn chưa phải là bạn bè! Vui lòng kết bạn để nhắn tin"}
                             type="system" />
+                    }
+                    {
+                        errorBannerText !== '' && <Bubble text={errorBannerText} type="error" />
+                    }
+                    {
+                        chatId &&
+                        <FlatList
+                            data={chatMessages}
+                            keyExtractor={item => item.key}
+                            renderItem={
+                                (itemData) => {
+                                    const message = itemData.item;
+                                    const isOwnMessage = message.sendBy === userLogin?.userId;
+                                    const messageType = isOwnMessage ? "myMessage" : "theirMessage";
+                                    return <Bubble
+                                        type={messageType}
+                                        text={message.text}
+                                        keyIndex={message.key}
+                                    />
+                                }
+                            }
+
+                        />
                     }
                 </PageContainer>
             </ImageBackground>

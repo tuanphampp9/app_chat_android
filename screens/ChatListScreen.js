@@ -25,7 +25,6 @@ const ChatListScreen = ({ navigation }) => {
         })
         return sortNewestMessage;
     });
-    console.log('user chat: ', userChats);
     useEffect(() => {
         if (userLogin?.userId) {
             const app = getFirebaseApp();
@@ -79,7 +78,6 @@ const ChatListScreen = ({ navigation }) => {
                     //filter other user
                     const otherUserId = chatDataObj.users.find((userId) => userId !== userLogin?.userId);
                     const otherUser = storedUsers[otherUserId];
-                    console.log('chatDataObj:', chatDataObj);
                     //không có user nào thì return luôn!
                     if (!otherUser) return;
                     return <DataUserItem
