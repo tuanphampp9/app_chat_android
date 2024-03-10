@@ -10,6 +10,7 @@ import DataUserItem from '../components/DataUserItem'
 import PageContainer from '../components/PageContainer'
 import { handleTimeMessage } from '../utils/handleTime'
 import PageTitle from '../components/PageTitle'
+import { setStoredUsers } from '../store/usersSlice'
 
 const ChatListScreen = ({ navigation }) => {
     const [countNoti, setCountNoti] = useState(0);
@@ -44,6 +45,19 @@ const ChatListScreen = ({ navigation }) => {
             )
         }
     }, [userLogin?.userId])
+    useEffect(() => {
+        const app = getFirebaseApp();
+        const dbRef = ref(getDatabase(app));
+        const userRef = child(dbRef, 'users')
+        onValue(userRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const objUsers = snapshot.val();
+                const arrUsers = Object.values(objUsers);
+                dispatch(setStoredUsers({ newUsers: arrUsers }))
+            }
+        }
+        )
+    }, [])
     useEffect(() => {
         navigation.setOptions({
             headerLeft: () => {
@@ -90,9 +104,11 @@ const ChatListScreen = ({ navigation }) => {
                                 accountData: otherUser,
                                 newChatData: { users: [otherUser.userId, userLogin?.userId] },
                                 isFriend: true,
-                                chatId: chatDataObj.key
+                                chatId: chatDataObj.key,
+                                isOnline: otherUser?.isOnline
                             })
                         }}
+                        isOnline={otherUser?.isOnline}
                         textTime={handleTimeMessage(chatDataObj.updateAt)}
                     />
                 }}

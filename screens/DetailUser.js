@@ -71,7 +71,13 @@ const DetailUser = ({ navigation, route }) => {
                 <ProfileImage
                     uri={accountData.profilePicture}
                     size={200}
-                    showEditBtn={false} />
+                    showEditBtn={false}
+                    isOnline={accountData?.isOnline}
+                    styleIconStatus={{
+                        position: 'absolute',
+                        right: 40,
+                        bottom: -80
+                    }} />
                 <Text style={styles.textName}>{accountData.fullName}</Text>
                 <Text style={styles.textAbout}>{accountData?.about}</Text>
             </View>

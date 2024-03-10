@@ -4,7 +4,7 @@ import ProfileImage from './ProfileImage'
 import colors from '../constants/colors';
 import { useNavigation } from '@react-navigation/native';
 const DataUserItem = (props) => {
-    const { accountId, title, image, subTitle, textTime, onPress } = props;
+    const { accountId, title, image, subTitle, textTime, onPress, isOnline } = props;
     const navigation = useNavigation();
     return (
         <TouchableWithoutFeedback onPress={onPress}
@@ -13,7 +13,13 @@ const DataUserItem = (props) => {
                 <ProfileImage
                     uri={image}
                     size={40}
-                    showEditBtn={false} />
+                    showEditBtn={false}
+                    isOnline={isOnline}
+                    styleIconStatus={{
+                        position: 'absolute',
+                        right: -15,
+                        bottom: -18
+                    }} />
                 <View style={styles.textContainer}>
                     <Text
                         numberOfLines={1}

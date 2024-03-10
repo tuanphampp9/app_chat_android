@@ -16,7 +16,8 @@ const ChatScreen = () => {
     const [chatUsers, setChatUsers] = useState([]);
     const route = useRoute();
     const [chatId, setChatId] = useState(route.params?.chatId);
-
+    const isOnline = route.params?.isOnline ?? false;
+    console.log("🚀 ~ file: ChatScreen.js:20 ~ ChatScreen ~ isOnline:", isOnline);
     const userLogin = useSelector((state) => state.auth.userData)
     const chatMessages = useSelector((state) => {
         if (!chatId) return [];
@@ -42,10 +43,14 @@ const ChatScreen = () => {
     const navigation = useNavigation();
     useEffect(() => {
         navigation.setOptions({
-            headerTitle: accountData.fullName
+            headerTitle: () => <View>
+                <Text style={{ fontFamily: 'medium', fontSize: 14 }}>{accountData.fullName}</Text>
+                <Text style={{ fontFamily: 'regular', color: colors.statusOnline, fontSize: 12 }}>{isOnline ? 'Đang hoạt động' : 'Chưa hoạt động'}</Text>
+            </View>
         })
         setChatUsers(chatData.users)
     }, [chatUsers])
+    console.log("🚀 ~ file: ChatScreen.js:50 ~ ChatScreen ~ chatUsers:", chatUsers);
 
     const sendMessage = useCallback(async () => {
         try {
@@ -101,6 +106,8 @@ const ChatScreen = () => {
                                         type={messageType}
                                         text={message.text}
                                         keyIndex={message.key}
+                                        chatId={chatId}
+                                        timeSend={message.sendAt}
                                     />
                                 }
                             }

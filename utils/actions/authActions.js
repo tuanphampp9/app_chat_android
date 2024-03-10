@@ -3,8 +3,8 @@ import { getFirebaseApp } from "../firebaseConfig"
 import { createUserWithEmailAndPassword, getAuth, sendEmailVerification, signInWithEmailAndPassword } from 'firebase/auth'
 import { child, getDatabase, ref, set, update } from 'firebase/database'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { logout } from "../../store/authSlice";
-import { getUserData } from '../actions/userAction'
+import { logout, updateLoggedUserData } from "../../store/authSlice";
+import { getUserData } from '../actions/userAction';
 let timer;
 export const signUp = async (dataSubmit) => {
     const { firstName, lastName, email, password } = dataSubmit
@@ -56,11 +56,14 @@ const createUser = async (dataSubmit) => {
     return userData
 }
 
-export const logoutHandler = () => {
+export const logoutHandler = (userId) => {
     return async dispatch => {
         AsyncStorage.clear();
         clearTimeout(timer)
+        await updateSignedInUserData(userId, { isOnline: false })
         dispatch(logout())
+        //set status online when logout
+        dispatch(updateLoggedUserData({ newData: { isOnline: false } }))
     }
 }
 export const signIn = (dataSubmit) => {
@@ -71,6 +74,8 @@ export const signIn = (dataSubmit) => {
         try {
             const result = await signInWithEmailAndPassword(auth, email, password);
             const { stsTokenManager, uid } = result.user;
+            //set status online
+            await updateSignedInUserData(uid, { isOnline: true })
             const userData = await getUserData(uid);
             //save info into local Emulator
             saveDataToStorage(result.user.accessToken, uid, expirationDate)

@@ -8,7 +8,8 @@ import { launchImagePicker, uploadImageAsync } from '../utils/ImagePickerConfig'
 import { updateSignedInUserData } from '../utils/actions/authActions';
 import { useDispatch } from 'react-redux'
 import { updateLoggedUserData } from '../store/authSlice';
-const ProfileImage = ({ size, uri, userId, showEditBtn }) => {
+import { Entypo } from '@expo/vector-icons';
+const ProfileImage = ({ size, uri, userId, showEditBtn, isOnline, styleIconStatus }) => {
     const sourceImg = uri ? { uri } : userImage
     const [image, setImage] = useState(null)
     const dispatch = useDispatch();
@@ -48,6 +49,9 @@ const ProfileImage = ({ size, uri, userId, showEditBtn }) => {
                 source={image ? image : sourceImg} />
             {showEditBtn && <View style={styles.editIcon}>
                 <FontAwesome name="pencil-square-o" size={24} color="black" />
+            </View>}
+            {isOnline && <View style={styleIconStatus}>
+                <Entypo name="dot-single" size={size} color={colors.statusOnline} />
             </View>}
         </TouchableOpacity>
     )

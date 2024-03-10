@@ -63,6 +63,7 @@ const SettingsScreen = () => {
             setIsLoading(false)
         }
     }
+
     return (
         <PageContainer>
             <PageTitle text="Cài đặt" />
@@ -115,7 +116,7 @@ const SettingsScreen = () => {
 
                 <SubmitButton
                     title="Đăng xuất"
-                    onPress={() => dispatch(logoutHandler())}
+                    onPress={() => dispatch(logoutHandler(userData?.userId))}
                     style={{ backgroundColor: 'red' }} />
             </ScrollView>
         </PageContainer>
