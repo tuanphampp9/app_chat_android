@@ -17,7 +17,6 @@ const ChatScreen = () => {
     const route = useRoute();
     const [chatId, setChatId] = useState(route.params?.chatId);
     const isOnline = route.params?.isOnline ?? false;
-    console.log("🚀 ~ file: ChatScreen.js:20 ~ ChatScreen ~ isOnline:", isOnline);
     const userLogin = useSelector((state) => state.auth.userData)
     const chatMessages = useSelector((state) => {
         if (!chatId) return [];
@@ -50,8 +49,6 @@ const ChatScreen = () => {
         })
         setChatUsers(chatData.users)
     }, [chatUsers])
-    console.log("🚀 ~ file: ChatScreen.js:50 ~ ChatScreen ~ chatUsers:", chatUsers);
-
     const sendMessage = useCallback(async () => {
         try {
             let id = chatId;

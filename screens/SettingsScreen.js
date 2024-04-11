@@ -27,7 +27,7 @@ const SettingsScreen = () => {
             about: ''
         },
         inputValues: {
-            firstName: userData.firstName || '',
+            firstName: userData?.firstName || '',
             lastName: userData.lastName || '',
             email: userData.email || '',
             about: userData?.about || ''
@@ -50,7 +50,7 @@ const SettingsScreen = () => {
     const saveHandler = async () => {
         try {
             setIsLoading(true);
-            const fullName = `${formState.inputValues.firstName} ${formState.inputValues.lastName}`.toLowerCase();
+            const fullName = `${formState.inputValues?.firstName} ${formState.inputValues.lastName}`.toLowerCase();
             const dataUpdates = {
                 ...formState.inputValues,
                 fullName

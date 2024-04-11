@@ -12,6 +12,7 @@ const NotificationScreen = ({ route }) => {
             const app = getFirebaseApp();
             const dbRef = ref(getDatabase(app));
             const notifyRef = child(dbRef, 'notifications')
+            //tim nhung loi moi ket ban cua minh (sendTo=userId)
             const queryRef = query(notifyRef, orderByChild('sendTo'), equalTo(userId))
             onValue(queryRef, (snapshot) => {
                 if (snapshot.exists()) {

@@ -58,7 +58,7 @@ const DetailUser = ({ navigation, route }) => {
         const result = await sendRequestFriend(accountId, {
             userId: userLogin.userId,
             fullName: userLogin.fullName,
-            profilePicture: userLogin.profilePicture
+            profilePicture: userLogin?.profilePicture ? userLogin?.profilePicture : ''
         })
     }
 

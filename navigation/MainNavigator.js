@@ -18,6 +18,9 @@ import colors from '../constants/colors';
 import commonStyle from '../constants/commonStyle';
 import { setStoredUsers } from '../store/usersSlice';
 import { setChatMessages } from '../store/messagesSlice';
+import TestScreen from '../screens/TestScreen';
+import { list } from 'firebase/storage';
+import ListStudent from '../screens/ListStudent';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -43,6 +46,26 @@ const TabNavigator = () => {
                         const { color, size } = props
                         return <Ionicons name="settings-outline" size={size} color={color} />
                     }
+                }}
+            />
+            <Tab.Screen name="addStudent" component={TestScreen}
+                options={{
+                    tabBarLabel: 'Thêm mới',
+                    tabBarIcon: (props) => {
+                        const { color, size } = props
+                        return <Ionicons name="book-outline" size={size} color={color} />
+                    },
+                    headerLeft: () => <Text>Thêm sinh viên</Text>
+                }}
+            />
+            <Tab.Screen name="listStudent" component={ListStudent}
+                options={{
+                    tabBarLabel: 'Danh sách',
+                    tabBarIcon: (props) => {
+                        const { color, size } = props
+                        return <Ionicons name="book-outline" size={size} color={color} />
+                    },
+                    headerLeft: () => <Text>Danh sách sinh viên</Text>
                 }}
             />
         </Tab.Navigator>
